@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"math"
@@ -11,6 +12,8 @@ func main() {
 	fmt.Println("algorithm ...")
 
 	fmt.Println(longestPalindrome("cbbd"))
+
+	fmt.Println(convert("PAYPALISHIRING", 3))
 
 }
 
@@ -246,8 +249,64 @@ func convert(s string, numRows int) string {
 	if len < 2 {
 		return s
 	}
+	numbers := [][]string{}
+	marked := 0
+	numCols := 0
+	for {
+		//向下
+		var numbersCol []string
+		added := 0
+		for i := 0; i < numRows; i++ {
+			numbersCol = append(numbersCol, string(s[marked]))
+			marked++
+			added++
+			if marked == len {
+				break
+			}
+		}
 
-	return s
+		empl := numRows - added
+		for i := 0; i < empl; i++ {
+			numbersCol = append(numbersCol, "")
+		}
+		numbers = append(numbers, numbersCol)
+		numCols++
+		if marked == len {
+			break
+		}
+		//向上
+		var numbersCol2 []string
+		added = 0
+		for i := numRows - 2; i > 0; i-- {
+			numbersCol2 = append(numbersCol2, string(s[marked]))
+			marked++
+			added++
+			if marked == len {
+				break
+			}
+		}
+		empl = numRows - added
+		var emparr []string
+		for i := 0; i < empl-1; i++ {
+			emparr = append(emparr, "")
+		}
+		for i := added - 1; i >= 0; i-- {
+			emparr = append(emparr, numbersCol2[i])
+		}
+		numbersCol2 = append(emparr, "")
+		numbers = append(numbers, numbersCol2)
+		numCols++
+		if marked == len {
+			break
+		}
+	}
+	var buffer bytes.Buffer
+	for i := 0; i < numRows; i++ {
+		for j := 0; j < numCols; j++ {
+			buffer.WriteString(numbers[j][i])
+		}
+	}
+	return buffer.String()
 }
 
 /* 快排

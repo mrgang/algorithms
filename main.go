@@ -9,12 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("algorithm ...")
-
-	fmt.Println(longestPalindrome("cbbd"))
-
-	fmt.Println(convert("PAYPALISHIRING", 3))
-
+	fmt.Println(myAtoi("42"))
 }
 
 /*
@@ -307,6 +302,134 @@ func convert(s string, numRows int) string {
 		}
 	}
 	return buffer.String()
+}
+
+/*7. 整数反转
+给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
+如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0。
+假设环境不允许存储 64 位整数（有符号或无符号）。
+示例 1：
+输入：x = 123
+输出：321
+*/
+func reverse(x int) int {
+	var isPositive = true
+	if x > 0 {
+		isPositive = true
+	} else {
+		isPositive = false
+		x = -x
+	}
+	retInt := 0
+	for x != 0 {
+		lastInt := x % 10
+		x = x / 10
+		retInt = retInt*10 + lastInt
+	}
+	if retInt > 2147483647 {
+		return 0
+	}
+	if isPositive {
+		return retInt
+	} else {
+		return -retInt
+	}
+}
+
+/*8. 字符串转换整数 (atoi)
+请你来实现一个myAtoi(string s)函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
+
+函数myAtoi(string s) 的算法如下：
+
+读入字符串并丢弃无用的前导空格
+检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
+读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
+将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
+如果整数数超过 32 位有符号整数范围 [−231, 231− 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。
+返回整数作为最终结果。
+注意：
+
+本题中的空白字符只包括空格字符 ' ' 。
+除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符。
+*/
+func myAtoi(s string) int {
+	const maxInt int64 = 1 << 31
+	var (
+		i    int
+		r    int64
+		sign int64 = 1
+	)
+	for ; i < len(s); i++ {
+		if s[i] != ' ' {
+			break
+		}
+	}
+	findSign := false
+	if s[i] == '-' {
+		sign = -1
+		i++
+		findSign = true
+	}
+	if s[i] == '+' {
+		if findSign {
+			return 0
+		}
+		sign = 1
+		i++
+
+	}
+
+	for ; i < len(s) && s[i] >= '0' && s[i] <= '9'; i++ {
+		r = r*10 + int64(s[i]-'0')
+		if r >= maxInt {
+			if sign == 1 {
+				r = maxInt - 1
+			} else {
+				r = maxInt
+			}
+			break
+		}
+	}
+	return int(r * sign)
+}
+
+/*9. 回文数
+给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。
+回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。例如，121 是回文，而 123 不是。
+*/
+func isPalindrome(x int) bool {
+	if x < 0 {
+		return false
+	}
+	if x < 10 {
+		return true
+	}
+
+	var (
+		curInt     int = x
+		lastInt    int
+		reverseInt int
+	)
+	for curInt != 0 {
+		lastInt = curInt % 10
+		reverseInt = reverseInt*10 + lastInt
+		curInt = curInt / 10
+	}
+	return reverseInt == x
+}
+
+/*10. 正则表达式匹配
+给你一个字符串s和一个字符规律p，请你来实现一个支持 '.'和'*'的正则表达式匹配。
+'.' 匹配任意单个字符
+'*' 匹配零个或多个前面的那一个元素
+所谓匹配，是要涵盖整个字符串s的，而不是部分字符串。
+*/
+func isMatch(s string, p string) bool {
+	if len(p) > len(s) || len(p)*len(s) == 0 {
+		return false
+	}
+
+	return false
 }
 
 /* 快排
